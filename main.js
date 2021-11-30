@@ -1,10 +1,7 @@
 import './style.css'
-
 import * as THREE from 'three';
-
 import Publisher from './Publisher.js';
 import Agent from './Agent.js'; 
-
 import {getRandomInt} from './utils.js';
 
 let agentslider = document.getElementById("agentSlider");
@@ -13,7 +10,7 @@ let criticalSlider = document.getElementById("criticalSlider");
 let misinformationSlider = document.getElementById("misinformationSlider");
 
 function updateDaySlider() {
-  var elem = document.getElementById("myBar");
+  var elem = document.getElementById("dayBar");
   if (days_elapsed >= days && day_ended()) {
     sim_running = false
     document.getElementById("startBtn").innerHTML = 'Start';
@@ -22,11 +19,22 @@ function updateDaySlider() {
   elem.innerHTML = 'day' + ' ' + days_elapsed;
 }
 
+function updateMisinformedSlider() {
+  var elem = document.getElementById("misinformedBar");
+  var count_misinformed = agents.filter((agent) => agent.influence < -0.15).length
+  var percent_misinformed = Math.round(count_misinformed/agentslider.querySelector('input').value*100) + '%'
+  
+  elem.style.width = percent_misinformed;
+  elem.innerHTML =  'misinformed '+ percent_misinformed ;
+}
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 5000);
 var renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#sim-canvas'),
 });
+
+renderer.setClearColor( "#666666", 0.2);
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -46,7 +54,7 @@ var agent_scientist_geometry = new THREE.SphereGeometry(2, 3, 3);
 var publisher_geometry = new THREE.TorusGeometry(10, 10, 7, 11);
 var publisher_material = new THREE.MeshBasicMaterial({color: 0xff3599, wireframe: true});
 
-function setup_publishers(){
+function setup_publisher(){
     var init_posX = 0
     var init_posY = 0
     var misinformation_percent = parseInt(misinformationSlider.querySelector('input').value)
@@ -84,7 +92,6 @@ function find_partners(num_partners){
     var taken_partners = []
     var random_offset = getRandomInt(0, 2);
     var random_partner_id = 0
-    var partnerFound = false
 
     agents.map(agent => {
       
@@ -92,7 +99,7 @@ function find_partners(num_partners){
         while (true) {
           random_partner_id = getRandomInt(0, num_partners);
           if (!taken_partners.includes(random_partner_id)){
-            agent.find_partner(agents[random_partner_id])
+            agent.partner = agents[random_partner_id]
             taken_partners.push(random_partner_id);
             break;
           }
@@ -105,6 +112,19 @@ function find_publishers(){
     agents.map(agent => {
       agent.publisher = publisher
     })
+}
+
+function choose_action(agent){
+  const rand = Math.random()
+  if (rand < 0.33) {
+    // find publisher
+    agent.publisher = publisher
+  } else if (rand < 0.66) {
+    // find partner
+    agent.partner = agents[getRandomInt(0, agentslider.querySelector('input').value)]
+  } else {
+    // do nothing
+  }
 }
 
 function day_ended(){
@@ -158,7 +178,7 @@ camera.position.z = gsap.utils.mapRange(0, 400, 10, 500, prev_agents)
 
 //temp
 
-var publisher = setup_publishers()
+var publisher = setup_publisher()
 
 function animate() {
   requestAnimationFrame(animate);
@@ -177,37 +197,41 @@ function animate() {
   if (misinformationSlider.querySelector('input').value != misinformation_level){
     misinformation_level = misinformationSlider.querySelector('input').value
     clear_entity('publisher')
-    publisher = setup_publishers()
+    publisher = setup_publisher()
   }
 
 
   if (day_ended() && sim_running && days_elapsed<=days){
         days_elapsed += 1
-        if (days_elapsed % 7 == 1){
-            find_publishers() 
-        }
-        find_partners(agentslider.querySelector('input').value)
+        // if (days_elapsed % 7 == 1){
+        //     find_publishers() 
+        // }
+        // find_partners(agentslider.querySelector('input').value)
+        agents.map(agent => choose_action(agent))
         
   }
-    if (sim_running){
-      agents.map(agent => {
-        agent.move()
-        agent.update_color()
-        if (agent.publisher != null && agent.atEntity(agent.publisher)){
-          agent.publisher = null
-        }
-      })
-    } else {
-      agents.map(agent => {
-        agent.mesh.rotation.x += 0.01
-      })
-    }
+
+  if (sim_running){
+    agents.map(agent => {
+      agent.move()
+      agent.update_color()
+      if (agent.publisher != null && agent.atEntity(agent.publisher)){
+        agent.publisher = null
+      }
+    })
+  } else {
+    agents.map(agent => {
+      agent.mesh.rotation.x += 0.01
+    })
+  }
 
   updateDaySlider()
+  updateMisinformedSlider()
+
+  console.log(agents[0].influence)
 
   publisher.mesh.rotation.y += 0.001
   publisher.mesh.rotation.z += 0.005
-  // publisher.rotateMoons()
 
   renderer.render(scene, camera);
 }

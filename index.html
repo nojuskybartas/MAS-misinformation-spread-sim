@@ -13,9 +13,21 @@
     <canvas id="sim-canvas"></canvas> 
 
     <button class='start-button' id='startBtn'>Start</button>
-    <div id="myProgress">
-      <div id="myBar"></div>
+    
+    <div class='bars'>
+      <div>
+        <div class="myProgress">
+          <div class="myBar" id="dayBar"></div>
+        </div>
+      </div>
+      <div>
+        <div class="myProgress">
+          <div class="myBar" id="misinformedBar"></div>
+        </div>
+      </div>
     </div>
+
+    
 
     <!-- <div id='publisherID'>Publisher</div> -->
 
@@ -23,7 +35,7 @@
       <div>
         <div class="field">
           <label class="text-label">Agents</label>
-          <div class="inputslider" data-unit="" data-values="50, 100, 150, 200, 250, 300, 350, 400" id='agentSlider'>
+          <div class="inputslider" data-unit="" data-values="75, 150, 225, 300, 375, 450, 525, 600" id='agentSlider'>
             <input type="text" name="input" autocomplete="on" readonly>
             <div class="values"></div>
             <div class="area">
@@ -37,7 +49,7 @@
       <div>
         <div class='field'>
           <label class="text-label">Days</label>
-          <div class="inputslider" data-unit="" data-values="100, 200, 300, 400, 500, 600, 700" id='daySlider'>
+          <div class="inputslider" data-unit="" data-values="182, 365, 547, 730, 912, 1095" id='daySlider'>
             <input type="text" name="input" autocomplete="on" readonly>
             <div class="values"></div>
             <div class="area">
@@ -64,7 +76,7 @@
       </div>
       <div>
         <div class='field'>
-          <label class="text-label">Critical Thinking</label>
+          <label class="text-label">Threshold of Critical Thinking</label>
           <div class="inputslider" data-unit="%" data-values="0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100" id='criticalSlider'>
             <input type="text" name="input" autocomplete="false" readonly>
             <div class="values"></div>
@@ -78,7 +90,7 @@
       </div>
       <div>
         <div class='field'>
-          <label class="text-label">Published Misinformation</label>
+          <label class="text-label">Published False Information</label>
           <div class="inputslider" data-unit="%" data-values="0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100" id='misinformationSlider'>
             <input type="text" name="input" autocomplete="on" readonly>
             <div class="values"></div>
@@ -94,7 +106,6 @@
 
     <script type="module" src="/slider.js"></script>
     <script type="module" src="/utils.js"></script> 
-    <script type="module" src="/Gradient.js"></script> 
     <script type="module" src="/Agent.js"></script>
     <script type="module" src="/Publisher.js"></script>
     <script type="module" src="/main.js"></script>

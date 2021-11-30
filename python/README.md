@@ -1,10 +1,18 @@
-# Multi-Agend Systems project - misinformation spread simulation
- Group 24 project for Tilburg University's Multi-Agent Systems course
+# Misinformation spread simulation model
+
+This model is built using pygame
+
+## To install/run
+```
+cd python
+pip install -r requirements.txt
+python3 main.py
+```
 
 # Implemented features:
 
 ## Publisher:
-The publisher is the big Torus structure in the middle of the screen. When an agent visits the publisher, they 'read' some sort of publication, either true, or fake, news. This affects the agents' influence. The publisher is visited by agents each week.
+Normal/Scientific publication ratio (eg. 1:5, which means that there is one normal publication and 5 scientific ones. Nevertheless, each agent will randomly pick only one publication to read each time)
 
 ## Agent:
 Has a score of influence (initialized at 0.0)
@@ -24,10 +32,10 @@ Every day finds a partner and talks with them. This affects both agents' influen
 	- Agent speed
 	
 # TODO:
-Redo the speed slider to not reset the simulation on change
-Implement some colour code for the agents to follow
-Implement some sort of data output after the simulation is done (need to know what data we're looking for)
-Finish the influence exchange function (agent talking)
-Add sliders (agent variables: initial influence, influence spread? (initialize agents according to normal distribution), scientist or not-scientist spread/ratio, influence spread multiplier)
+- ~~Redo the speed slider to not reset the simulation on change~~
+- ~~Implement some colour code for the agents to follow~~
+- Implement some sort of data output after the simulation is done (need to know what data we're looking for)
+- ~~Finish the influence exchange function (agent talking)~~
+- Add sliders (agent variables: initial influence, influence spread? (initialize agents according to normal distribution), scientist or not-scientist spread/ratio, influence spread multiplier)
 
 Need more explanation for critical thinking & network parts before implementation
